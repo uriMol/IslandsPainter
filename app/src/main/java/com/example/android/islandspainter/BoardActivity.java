@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class BoardActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -60,10 +61,11 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
         String tag = v.getTag().toString();
         switch(tag){
             case("random"):
-                //board.randomize();
+                board.randomize();
                 break;
             case("solve"):
-                //board.solve();
+                board.solve();
+                Toast.makeText(this, "Map is solved!", Toast.LENGTH_SHORT).show();
                 break;
             case("clean"):
                 //board.cleanBoard();

@@ -8,18 +8,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class MyViewHolder extends RecyclerView.ViewHolder implements  View.OnClickListener {
+public class MyViewHolder extends RecyclerView.ViewHolder  {
     TextView cell;
 
     public MyViewHolder(@NonNull View itemView) {
         super(itemView);
         this.cell = itemView.findViewById(R.id.cell);
-        cell.setOnClickListener(this);
-    }
-
-    @Override
-    public void onClick(View v) {
-        v.setBackgroundColor(Color.BLACK);
-
     }
 }
