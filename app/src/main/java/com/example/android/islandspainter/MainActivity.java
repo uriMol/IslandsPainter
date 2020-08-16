@@ -15,8 +15,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button btSetBoard;
     int cols, rows;
 
-    //MAX_DIM defines max dimension for the board, should be 1000
-    final int MAX_DIM = 1000;
+    //MAX_DIM defines max dimension for the board
+    final int MAX_COLS = 100;
+    final int MAX_ROWS = 1000;
 
 
 
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             rows = Integer.parseInt(etRows.getText().toString());
             cols = Integer.parseInt(etCols.getText().toString());
-            if(0 < rows && rows <= MAX_DIM && 0 < cols && cols <= MAX_DIM){
+            if(0 < rows && rows <= MAX_ROWS && 0 < cols && cols <= MAX_COLS){
                 etRows.getText().clear();
                 etCols.getText().clear();
                 Intent intent = new Intent(MainActivity.this, BoardActivity.class);
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(intent);
             } else {
                 Toast.makeText(MainActivity.this, "Board's dimension must be at least 1x1" +
-                        " and up to " + MAX_DIM + "x"+ MAX_DIM, Toast.LENGTH_LONG).show();
+                        " and up to " + MAX_ROWS + "x"+ MAX_COLS, Toast.LENGTH_LONG).show();
             }
         }
     }

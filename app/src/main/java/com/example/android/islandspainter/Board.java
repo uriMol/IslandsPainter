@@ -1,6 +1,6 @@
 package com.example.android.islandspainter;
 
-import android.util.Log;
+import android.app.Activity;
 import android.widget.Toast;
 
 import java.util.LinkedList;
@@ -10,18 +10,20 @@ public class Board {
     private int rows, cols, size;
     private int numOfIslands = 0;
     private Cell[] board;
+    private Activity activity;
 
     private boolean clean = true;
     private boolean solved = false;
 
-    private static final boolean INCLUDE_DIAG = false;
+    private static final boolean INCLUDE_DIAG = true;
 
-    final double FREQUENCY = 0.4;
+    final double FREQUENCY = 0.3;
 
-    public Board(int rows, int cols){
+    public Board(int rows, int cols, Activity activity){
         this.rows = rows;
         this.cols = cols;
         this.size = rows*cols;
+        this.activity = activity;
         this.board = new Cell[rows*cols];
         for(int i = 0; i < size; i++ ){
             board[i] = new Cell(i);
@@ -42,6 +44,11 @@ public class Board {
                 cell.stat = CellStatus.WHITE;
             }
         }
+        numOfIslands = 0;
+        solved = false;
+        clean = false;
+        Toast.makeText(activity, "Map is randomized!", Toast.LENGTH_SHORT).show();
+
     }
 
     public Cell[] getBoard() {
@@ -61,6 +68,7 @@ public class Board {
             }
             solved = true;
         }
+        Toast.makeText(activity, "Map is solved!", Toast.LENGTH_SHORT).show();
     }
 
     /*
@@ -119,6 +127,37 @@ public class Board {
         }
     }
 
+    public void cleanBoard() {
+        if(!clean){
+            for(Cell cell:board){
+                cell.setStat(CellStatus.WHITE);
+            }
+        }
+        numOfIslands = 0;
+        clean = true;
+        Toast.makeText(activity, "Map is clean!", Toast.LENGTH_SHORT).show();
+    }
+
+    public int getNumOfIslands() {
+        return this.numOfIslands;
+    }
+
+    public void unClean() {
+        this.clean = false;
+    }
+
+    public void unSolve() {
+        this.solved = false;
+    }
+
+    public boolean isSolved() {
+        return solved;
+    }
+
+    public void setNumOfIslands(int numOfIslands) {
+        this.numOfIslands = numOfIslands;
+    }
+
 
     public class Cell {
         private int index, islandID;
@@ -151,6 +190,10 @@ public class Board {
 
         public void setStat(CellStatus status) {
             this.stat = status;
+        }
+
+        public int getIndex() {
+            return this.index;
         }
     }
 }

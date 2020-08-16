@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -31,6 +32,10 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
         createRecycleView();
     }
 
+    /*
+        Generating the recycler view and its adapter
+        that is using the data from the board
+     */
     private void createRecycleView() {
         recyclerView = findViewById(R.id.recycleView);
         layoutManager = new GridLayoutManager(this, cols);
@@ -39,10 +44,14 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
         recyclerView.setAdapter(recyclerViewAdapter);
     }
 
+    /*
+        Creates the board - the Data for the board that
+        is used by the RecyclerView Adapter
+     */
     private void createBoard(Intent incomingIntent) {
         rows = incomingIntent.getIntArrayExtra("dimension")[0];
         cols = incomingIntent.getIntArrayExtra("dimension")[1];
-        board = new Board(rows, cols);
+        board = new Board(rows, cols, this);
 
     }
 
@@ -65,11 +74,63 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
                 break;
             case("solve"):
                 board.solve();
-                Toast.makeText(this, "Map is solved!", Toast.LENGTH_SHORT).show();
                 break;
             case("clean"):
-                //board.cleanBoard();
+                board.cleanBoard();
                 break;
         }
+        refreshNumOfIslands();
+        recyclerViewAdapter.notifyDataSetChanged();
     }
+
+    private void refreshNumOfIslands() {
+        int numOfIslands = board.getNumOfIslands();
+        String num = "";
+        if ((numOfIslands == 0)) {
+            num = "-";
+        } else {
+            num = "" + numOfIslands;
+        }
+        tvNumOfIslands.setText("No. of Islands:" + num);
+    }
+
+
+    /*
+    Taking care of the onSaveInstanceState -
+    We're saving a boolean "isWhite" variable for each cell,
+    and saving the "solved" field of the board
+     */
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        for(Board.Cell cell:board.getBoard()){
+            savedInstanceState.putBoolean(Integer.toString(cell.getIndex()), cell.getStat()!=CellStatus.WHITE);
+        }
+        savedInstanceState.putInt("numOfIslands", board.getNumOfIslands());
+        savedInstanceState.putBoolean("solved", board.isSolved());
+    }
+
+    /*
+        On restore - we make sure that every "not white" cell
+        is painted in black, and if the "solved" field was true
+        prior to onSaveInstanceState - we solve the board
+     */
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        for(Board.Cell cell:board.getBoard()) {
+            if (savedInstanceState.getBoolean(Integer.toString(cell.getIndex()))) {
+                cell.setStat(CellStatus.BLACK);
+                board.unClean();
+            }
+        }
+        if(savedInstanceState.getBoolean("solved")){
+            board.solve();
+        }
+        board.setNumOfIslands(savedInstanceState.getInt("numOfIslands"));
+        refreshNumOfIslands();
+        recyclerViewAdapter.notifyDataSetChanged();
+    }
+
+
 }
+
+
